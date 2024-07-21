@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  webserver:
+    image: exam_srv
+    container_name: exam_srv
+    ports:
+      - "8081:8081"
+    networks:
+      - my_network
+
+  automation-tests:
+    image: "marat-exam"
+    container_name: marat-exam
+    depends_on:
+      - webserver
+    volumes:
+      - results:/app/allure-results
+    command: /bin/sh -c "pytest -sv --alluredir=/app/temp-allure-results && cp -r /app/temp-allure-results/* /app/allure-results/"
+    working_dir: /app
+    networks:
+      - my_network
+
+  allure-report:
+    image: "allure"
+    depends_on:
+      - automation-tests
+    ports:
+      - "8080:8080"
+    volumes:
+      - results:/app/allure-results
+    command: /bin/sh -c "allure generate /app/allure-results --clean -o /app/allure-report && cd /app/allure-report && python3 -m http.server 8080"
+    working_dir: /app
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  results:
+
