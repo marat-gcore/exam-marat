@@ -15,8 +15,9 @@ services:
     depends_on:
       - webserver
     volumes:
+      - ./:/app
       - results:/app/allure-results
-    command: /bin/sh -c "pytest -sv --alluredir=/app/temp-allure-results && cp -r /app/temp-allure-results/* /app/allure-results/"
+    command: /bin/sh -c "pytest -sv"
     working_dir: /app
     networks:
       - my_network
