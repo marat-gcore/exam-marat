@@ -1,25 +1,25 @@
-# How to run automation tests
+## How to run automation tests
 
-### Clone the repository
+### The image "exam_srv" should be already created
 
-### The image "exam_srv" should be created
+### 1. Clone the repository
 
-### Build image "marat-exam"
+### 2. Build image "marat-exam"
 ```python
 docker build -t marat-exam .
 ```
 
-### Build image "allure"
+### 3. Build image "allure"
 ```python
 docker build -t allure ./allure
 ```
 
-### Run tests
+### 4. Run tests
 ```python
 docker compose up
 ```
 
-### Open allure report in browser
+### 5. Open allure report in browser
 ```python
 http://localhost:8080
 ```
