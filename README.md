@@ -14,12 +14,27 @@ docker build -t marat-exam .
 docker build -t allure ./allure
 ```
 
-### 4. Run tests
+### 4. Run web server container
 ```python
-docker compose up
+docker compose up -d webserver
 ```
 
-### 5. Open allure report in browser
+### 5. Run tests container
+```python
+docker compose up automation-tests
+```
+
+### 6. Run allure container
+```python
+docker compose up -d allure-report
+```
+
+### 7. Open allure report in browser
 ```python
 http://localhost:8080
+```
+
+### 8. Clean containers
+```python
+docker compose down
 ```
