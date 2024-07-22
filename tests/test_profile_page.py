@@ -9,17 +9,8 @@ from http import HTTPStatus
 
 
 class TestProfilePage:
-
-    test_data = [
-        (1, 4, "Berlin", "http://test1.com"),
-        (2, 8, "Perm", "http://test2.com"),
-        (4, 16, "Tokyo", "http://test3.com")
-    ]
-
-    # @pytest.mark.skip
-    @pytest.mark.parametrize("cpu, ram, location, domain", test_data)
     def test_create_3_servers_and_validate_total_count(
-            self, login, chrome_driver, main_page_url, client, cpu, ram, location, domain
+            self, login, chrome_driver, main_page_url, client
     ):
         """
          - Create 3 servers
@@ -27,19 +18,28 @@ class TestProfilePage:
          - Validate total number of servers via API
          """
 
-        profile_page = ProfilePage(chrome_driver, main_page_url)
+        test_data = [
+            (1, 4, "Berlin", "http://test1.com"),
+            (2, 8, "Perm", "http://test2.com"),
+            (4, 16, "Tokyo", "http://test3.com")
+        ]
 
-        # 1. Create 3 servers
-        profile_page.create_server(
-            cpu=cpu,
-            ram=ram,
-            location=location,
-            domain=domain
-        )
-        time.sleep(1)
+        profile_page = ProfilePage(chrome_driver, main_page_url)
+        total_servers = []
+
+        for cpu, ram, location, domain in test_data:
+            server = profile_page.create_server(
+                cpu=cpu,
+                ram=ram,
+                location=location,
+                domain=domain
+            )
+            time.sleep(0.5)
+            total_servers.append(server)
 
         # 2. Validate total number of servers
-        # assert profile_page.get_total_servers() == 3
+        assert len(total_servers) == profile_page.get_total_servers()
+
 
         # 3. Validate total number of servers via API
         response = client.get_servers_list()
@@ -47,7 +47,7 @@ class TestProfilePage:
         total = response_body['items']
 
         BaseAssertion.assert_status_code(response, HTTPStatus.OK)
-        assert len(total) == 3
+        assert len(total_servers) == len(total)
 
     # @pytest.mark.skip
     def test_delete_1_server_and_validate_total_count(
